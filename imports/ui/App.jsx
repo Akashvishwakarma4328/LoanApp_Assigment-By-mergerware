@@ -7,11 +7,17 @@ import { UserSelectionForm } from './UserSelectionForm';
 
 export const App = () => {
   const [selectedUserType, setSelectedUserType] = useState('');
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
 
   const user = useTracker(() => Meteor.user());
 
   const handleUserTypeSelection = (userType) => {
     setSelectedUserType(userType);
+    setShowRegisterForm(false); // Reset to login form when user selects a user type
+  };
+
+  const toggleRegisterForm = () => {
+    setShowRegisterForm(!showRegisterForm);
   };
 
   return (
@@ -21,17 +27,14 @@ export const App = () => {
       )}
 
       {selectedUserType === 'borrower' && (
-        // Borrower-specific content or forms
         <div>Borrower Content</div>
       )}
 
       {selectedUserType === 'lender' && (
-        // Lender-specific content or forms
         <div>Lender Content</div>
       )}
 
       {selectedUserType === 'admin' && (
-        // Admin-specific content or forms
         <div>Admin Content</div>
       )}
 
@@ -43,8 +46,14 @@ export const App = () => {
       ) : (
         selectedUserType && (
           <Fragment>
-            <LoginForm userType={selectedUserType} />
-            <RegisterForm userType={selectedUserType} />
+            {showRegisterForm ? (
+              <RegisterForm userType={selectedUserType} />
+            ) : (
+              <LoginForm userType={selectedUserType} />
+            )}
+            <button onClick={toggleRegisterForm}>
+              {showRegisterForm ? 'Switch to Login' : 'Switch to Register'}
+            </button>
           </Fragment>
         )
       )}
