@@ -1,15 +1,11 @@
-// server/main.js
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { Mongo } from 'meteor/mongo';
 
-// Define a new Mongo collection for storing borrower loans
 const BorrowerLoans = new Mongo.Collection('borrowerLoans');
 
-// Define a new Mongo collection for storing lender loans
 const LenderLoans = new Mongo.Collection('lenderLoans');
 
-// Seed user data on startup
 const SEED_USERNAME = 'meteorite';
 const SEED_PASSWORD = 'password';
 
@@ -78,13 +74,12 @@ Meteor.methods({
   'borrower.requestLoan': function (userId, loanAmount, loanPurpose) {
     const loanId = BorrowerLoans.insert({
       userId,
-      loanId: Random.id(), // Generate a unique ID
+      loanId: Random.id(),
       amount: loanAmount,
       purpose: loanPurpose,
       dateRequested: new Date(),
     });
 
-    // Return the ID of the newly created loan record
     return loanId;
   },
 
@@ -96,13 +91,12 @@ Meteor.methods({
   'lender.lendLoan': function (lenderId, loanAmount, loanPurpose) {
     const loanId = LenderLoans.insert({
       lenderId,
-      loanId: Random.id(), // Generate a unique ID
+      loanId: Random.id(), 
       amount: loanAmount,
       purpose: loanPurpose,
       dateLent: new Date(),
     });
 
-    // Return the ID of the newly created loan record
     return loanId;
   },
 

@@ -1,4 +1,3 @@
-// client/components/Borrower.js
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';

@@ -1,4 +1,3 @@
-// client/components/RegisterForm.js
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +7,7 @@ const RegisterForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [userTypeInput, setUserTypeInput] = useState('');
-    const [alert, setAlert] = useState(null);  // Internal state for alert
+    const [alert, setAlert] = useState(null);  
     const navigate = useNavigate();
 
     const showAlert = (type, message) => {
@@ -28,8 +27,7 @@ const RegisterForm = () => {
             } else {
                 console.log('User registered with ID:', result);
                 showAlert('success', 'Registration successful!');
-                // Navigate to the login page after successful registration
-                // navigate('/login');
+                
             }
         });
     };
@@ -106,7 +104,7 @@ const RegisterForm = () => {
                     <select
                         style={inputStyle}
                         name="userTypeInput"
-                        value={userTypeInput || ''}  // Set value to an empty string if userTypeInput is falsy
+                        value={userTypeInput || ''}  
                         onChange={(event) => setUserTypeInput(event.target.value)}
                     >
                         <option value="" disabled>Select User Type</option>

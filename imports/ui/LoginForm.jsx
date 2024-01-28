@@ -1,4 +1,3 @@
-// client/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,7 +10,7 @@ const LoginForm = ({ onLogin }) => {
     const location = useLocation();
 
     useEffect(() => {
-        // Set initial state based on previous state from location
+       
         if (location.state) {
             const { email, userType } = location.state;
             setEmail(email || '');
@@ -25,7 +24,7 @@ const LoginForm = ({ onLogin }) => {
         Meteor.call('user.login', email, password, selectedUserType, (error, result) => {
             if (error) {
                 console.error(error.reason);
-                // Display an alert for the error
+                
                 alert('Login failed. Please check your credentials and try again.');
             } else {
                 if (result && result.userType && result.name && result.userId) {
@@ -34,7 +33,7 @@ const LoginForm = ({ onLogin }) => {
                     handleNavigation(result.userType, result.name, result.userId);
                 } else {
                     console.error('Invalid login result structure');
-                    // Display an alert for unexpected result structure
+                    
                     alert('Login failed. Unexpected result structure. Please try again.');
                 }
             }

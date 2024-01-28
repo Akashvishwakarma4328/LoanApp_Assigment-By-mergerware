@@ -1,4 +1,4 @@
-// client/components/Admin.js
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
@@ -63,7 +63,7 @@ const Admin = () => {
 
     return (
         <div>
-            {/* Commented out the Header component, as userName and userType are not defined here */}
+            
             <Header user={{ username: userName }} selectedUserType={userType} />
             <h2 style={{ textAlign: 'center' }}>Admin Page</h2>
             <div style={containerStyle}>

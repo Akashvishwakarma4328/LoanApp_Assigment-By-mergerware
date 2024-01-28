@@ -1,4 +1,3 @@
-// client/components/Lender.js
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
@@ -64,7 +63,7 @@ const Lender = () => {
     };
 
     const historyItemStyle = {
-        color: '#3498db', // Change color to your preferred value
+        color: '#3498db', 
         marginBottom: '10px',
     };
 
@@ -87,15 +86,15 @@ const Lender = () => {
 
     return (
         <div>
-            {/* Display the Header with user information */}
+            
             <Header user={{ username: userName }} selectedUserType={userType} />
 
-            {/* Container for the lending form and history */}
+            
             <div style={containerStyle}>
-                {/* Lending Form */}
+                
                 <div style={formStyle}>
                     <h2 style={{ textAlign: 'center', color: '#3498db' }}>Lend Money Form</h2>
-                    {/* Form for lending money */}
+                    
                     <form onSubmit={handleLoanLend}>
                         <label>
                             Amount:
@@ -121,10 +120,10 @@ const Lender = () => {
                     </form>
                 </div>
 
-                {/* Lending History Section */}
+               
                 <div style={historyStyle}>
                     <h2 style={{ textAlign: 'center', color: '#3498db' }}>Lending History</h2>
-                    {/* Display the lending history */}
+                   
                     <ul>
                         {loanHistory.map((lending) => (
                             <li key={lending._id} style={historyItemStyle}>

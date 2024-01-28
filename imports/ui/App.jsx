@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header';
@@ -18,13 +17,11 @@ const App = () => {
 
   const handleLogin = () => {
     setShowRegisterForm(true);
-    // Add any additional logic you need on login
   };
 
   return (
     <Router>
       <Routes>
-        {/* Common layout for login and register routes */}
         <Route
           path="/"
           element={
@@ -44,8 +41,6 @@ const App = () => {
             </>
           }
         />
-
-        {/* Individual routes without common layout */}
         <Route path='/borrower' element={<Borrower />} />
         <Route path='/lender' element={<Lender />} />
         <Route path='/admin' element={<Admin />} />
