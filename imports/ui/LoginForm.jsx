@@ -1,27 +1,54 @@
-// LoginForm.jsx
+// client/components/LoginForm.js
 import React, { useState } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export const LoginForm = ({ userType }) => {
+const LoginForm = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [selectedUserType, setSelectedUserType] = useState('borrower');
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = (event) => {
         event.preventDefault();
-        // Use 'userType' as needed
-        // Call the 'user.login' method with 'userType' parameter
-        Meteor.call('user.login', email, password, userType, (error) => {
+
+        Meteor.call('user.login', email, password, selectedUserType, (error, result) => {
             if (error) {
                 console.error(error.reason);
             } else {
-                console.log('User logged in');
-                // Additional logic after successful login
+                console.log('User logged in', result);
+                if (result && result.userType && result.name && result.userId) {
+                    onLogin(result);
+                    // Pass the user type, name, and userId to the parent component
+                    console.log(result.userType + " " + result.name + " " + result.userId);
+                    handleNavigation(result.userType, result.name, result.userId);
+                } else {
+                    // Handle the case where result is missing expected properties
+                    console.error('Invalid login result structure');
+                }
             }
         });
     };
 
+    const handleNavigation = (userType, userName, userId) => {
+        console.log(userType, userName, userId);
+        if (userType === 'borrower') {
+            navigate('/borrower', { state: { userName, userType, userId } });
+        } else if (userType === 'lender') {
+            navigate('/lender', { state: { userName, userType, userId } });
+        } else if (userType === 'admin') {
+            navigate('/admin', { state: { userName, userType, userId } });
+        } else {
+            navigate('/home');
+        }
+    };
+
+    // Access state from the previous location
+    const previousState = location.state;
+
     const formStyle = {
-        maxWidth: '300px',
-        margin: '0 auto',
+        width: '300px',
         padding: '20px',
         borderRadius: '10px',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
@@ -31,7 +58,6 @@ export const LoginForm = ({ userType }) => {
     const labelStyle = {
         display: 'block',
         margin: '10px 0',
-        color: '#333',
     };
 
     const inputStyle = {
@@ -39,23 +65,21 @@ export const LoginForm = ({ userType }) => {
         padding: '8px',
         margin: '5px 0',
         boxSizing: 'border-box',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
     };
 
     const buttonStyle = {
-        width: '100%',
-        padding: '10px',
+        marginTop: '10px',
+        padding: '8px 16px',
+        cursor: 'pointer',
         backgroundColor: '#3498db',
         color: '#fff',
         border: 'none',
         borderRadius: '5px',
-        cursor: 'pointer',
     };
 
     return (
         <div style={formStyle}>
-            <h2 style={{ textAlign: 'center', color: '#333' }}>Login</h2>
+            <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <label style={labelStyle}>
                     Email:
@@ -77,8 +101,25 @@ export const LoginForm = ({ userType }) => {
                         onChange={(event) => setPassword(event.target.value)}
                     />
                 </label>
-                <button style={buttonStyle} type="submit">Login</button>
+                <label style={labelStyle}>
+                    User Type:
+                    <select
+                        style={inputStyle}
+                        name="userType"
+                        value={selectedUserType}
+                        onChange={(event) => setSelectedUserType(event.target.value)}
+                    >
+                        <option value="borrower">Borrower</option>
+                        <option value="lender">Lender</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </label>
+                <button style={buttonStyle} type="submit">
+                    Login
+                </button>
             </form>
         </div>
     );
 };
+
+export default LoginForm;

@@ -1,27 +1,29 @@
-// RegisterForm.jsx
+// client/components/RegisterForm.js
 import React, { useState } from 'react';
+import { Meteor } from 'meteor/meteor';
 
-export const RegisterForm = ({ userType }) => {
+const RegisterForm = ({ showAlert }) => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userTypeInput, setUserTypeInput] = useState('');
 
     const handleRegister = (event) => {
         event.preventDefault();
-        // Use 'userType' as needed
-        // Call the 'user.register' method with 'userType' parameter
-        Meteor.call('user.register', email, password, userType, (error, result) => {
+
+        Meteor.call('user.register', email, password, userTypeInput, name, (error, result) => {
             if (error) {
                 console.error(error.reason);
+                showAlert('error', 'Registration failed. Please try again.');
             } else {
                 console.log('User registered with ID:', result);
-                // Additional logic after successful registration
+                showAlert('success', 'Registration successful!');
             }
         });
     };
 
     const formStyle = {
-        maxWidth: '300px',
-        margin: '0 auto',
+        width: '300px',
         padding: '20px',
         borderRadius: '10px',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
@@ -31,7 +33,6 @@ export const RegisterForm = ({ userType }) => {
     const labelStyle = {
         display: 'block',
         margin: '10px 0',
-        color: '#333',
     };
 
     const inputStyle = {
@@ -39,23 +40,21 @@ export const RegisterForm = ({ userType }) => {
         padding: '8px',
         margin: '5px 0',
         boxSizing: 'border-box',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
     };
 
     const buttonStyle = {
-        width: '100%',
-        padding: '10px',
-        backgroundColor: '#2ecc71',
+        marginTop: '10px',
+        padding: '8px 16px',
+        cursor: 'pointer',
+        backgroundColor: '#3498db',
         color: '#fff',
         border: 'none',
         borderRadius: '5px',
-        cursor: 'pointer',
     };
 
     return (
         <div style={formStyle}>
-            <h2 style={{ textAlign: 'center', color: '#333' }}>Register</h2>
+            <h2>Register</h2>
             <form onSubmit={handleRegister}>
                 <label style={labelStyle}>
                     Email:
@@ -77,8 +76,35 @@ export const RegisterForm = ({ userType }) => {
                         onChange={(event) => setPassword(event.target.value)}
                     />
                 </label>
-                <button style={buttonStyle} type="submit">Register</button>
+                <label style={labelStyle}>
+                    User Type:
+                    <select
+                        style={inputStyle}
+                        name="userTypeInput"
+                        value={userTypeInput}
+                        onChange={(event) => setUserTypeInput(event.target.value)}
+                    >
+                        <option value="borrower">Borrower</option>
+                        <option value="lender">Lender</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </label>
+                <label style={labelStyle}>
+                    Name:
+                    <input
+                        style={inputStyle}
+                        type="text"
+                        name="name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                    />
+                </label>
+                <button style={buttonStyle} type="submit">
+                    Register
+                </button>
             </form>
         </div>
     );
 };
+
+export default RegisterForm;
