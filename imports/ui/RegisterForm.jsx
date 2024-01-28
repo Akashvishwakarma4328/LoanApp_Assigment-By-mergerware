@@ -1,12 +1,22 @@
 // client/components/RegisterForm.js
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { useNavigate } from 'react-router-dom';
 
-const RegisterForm = ({ showAlert }) => {
+const RegisterForm = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [userTypeInput, setUserTypeInput] = useState('');
+    const [alert, setAlert] = useState(null);  // Internal state for alert
+    const navigate = useNavigate();
+
+    const showAlert = (type, message) => {
+        setAlert({ type, message });
+        setTimeout(() => {
+            setAlert(null);
+        }, 3000);
+    };
 
     const handleRegister = (event) => {
         event.preventDefault();
@@ -18,6 +28,8 @@ const RegisterForm = ({ showAlert }) => {
             } else {
                 console.log('User registered with ID:', result);
                 showAlert('success', 'Registration successful!');
+                // Navigate to the login page after successful registration
+                // navigate('/login');
             }
         });
     };
@@ -54,6 +66,19 @@ const RegisterForm = ({ showAlert }) => {
 
     return (
         <div style={formStyle}>
+            {alert && (
+                <div
+                    style={{
+                        marginBottom: '10px',
+                        padding: '8px',
+                        backgroundColor: alert.type === 'error' ? '#e74c3c' : '#2ecc71',
+                        color: '#fff',
+                        borderRadius: '5px',
+                    }}
+                >
+                    {alert.message}
+                </div>
+            )}
             <h2>Register</h2>
             <form onSubmit={handleRegister}>
                 <label style={labelStyle}>
@@ -81,9 +106,10 @@ const RegisterForm = ({ showAlert }) => {
                     <select
                         style={inputStyle}
                         name="userTypeInput"
-                        value={userTypeInput}
+                        value={userTypeInput || ''}  // Set value to an empty string if userTypeInput is falsy
                         onChange={(event) => setUserTypeInput(event.target.value)}
                     >
+                        <option value="" disabled>Select User Type</option>
                         <option value="borrower">Borrower</option>
                         <option value="lender">Lender</option>
                         <option value="admin">Admin</option>

@@ -1,14 +1,23 @@
 // client/components/LoginForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const LoginForm = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [selectedUserType, setSelectedUserType] = useState('borrower');
+    const [selectedUserType, setSelectedUserType] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        // Set initial state based on previous state from location
+        if (location.state) {
+            const { email, userType } = location.state;
+            setEmail(email || '');
+            setSelectedUserType(userType || '');
+        }
+    }, [location.state]);
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -16,23 +25,23 @@ const LoginForm = ({ onLogin }) => {
         Meteor.call('user.login', email, password, selectedUserType, (error, result) => {
             if (error) {
                 console.error(error.reason);
+                // Display an alert for the error
+                alert('Login failed. Please check your credentials and try again.');
             } else {
-                console.log('User logged in', result);
                 if (result && result.userType && result.name && result.userId) {
                     onLogin(result);
-                    // Pass the user type, name, and userId to the parent component
-                    console.log(result.userType + " " + result.name + " " + result.userId);
+                    console.log('User logged in', result);
                     handleNavigation(result.userType, result.name, result.userId);
                 } else {
-                    // Handle the case where result is missing expected properties
                     console.error('Invalid login result structure');
+                    // Display an alert for unexpected result structure
+                    alert('Login failed. Unexpected result structure. Please try again.');
                 }
             }
         });
     };
 
     const handleNavigation = (userType, userName, userId) => {
-        console.log(userType, userName, userId);
         if (userType === 'borrower') {
             navigate('/borrower', { state: { userName, userType, userId } });
         } else if (userType === 'lender') {
@@ -43,9 +52,6 @@ const LoginForm = ({ onLogin }) => {
             navigate('/home');
         }
     };
-
-    // Access state from the previous location
-    const previousState = location.state;
 
     const formStyle = {
         width: '300px',
@@ -106,9 +112,10 @@ const LoginForm = ({ onLogin }) => {
                     <select
                         style={inputStyle}
                         name="userType"
-                        value={selectedUserType}
+                        value={selectedUserType || ''}
                         onChange={(event) => setSelectedUserType(event.target.value)}
                     >
+                        <option value="" disabled>Select User Type</option>
                         <option value="borrower">Borrower</option>
                         <option value="lender">Lender</option>
                         <option value="admin">Admin</option>
