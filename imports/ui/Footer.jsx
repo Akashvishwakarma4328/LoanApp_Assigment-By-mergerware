@@ -4,7 +4,7 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer style={footerStyle}>
-            <p>&copy; 2024 Your App. All rights reserved.</p>
+            <p>&copy; 2024. Submitted by Akash Vishwakarma(20BCE10848)</p>
         </footer>
     );
 };
